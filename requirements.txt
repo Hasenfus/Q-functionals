@@ -1,0 +1,11 @@
+-e .
+cpprb
+gym
+torch
+matplotlib
+seaborn
+onager
+gym[mujoco]
+pfrl
+opencv-python
+stable-baselines3
