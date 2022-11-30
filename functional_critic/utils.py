@@ -54,10 +54,8 @@ def update_param(params, arg_name, arg_value):
 
 def get_hyper_parameters(name, hyper_param_directory):
     meta_params = {}
-    # THIS_DIR = os.path.dirname(os.path.abspath(__file__))
     filepath = os.path.join(hyper_param_directory, f"{name}.hyper")
-    # filepath = os.path.join(THIS_DIR, alg + "_hyper_parameters",
-    # name + ".hyper")
+
     with open(filepath) as f:
         lines = [line.rstrip('\n') for line in f]
         for l in lines:

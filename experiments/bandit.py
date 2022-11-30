@@ -45,10 +45,8 @@ class MultimodalEnv(gym.Env):
                 for index in indices:
                     center[index] = -self.center
                 self.distributionCenters.append(center)
-        # breakpoint()
         self.distributionCenters = np.array(self.distributionCenters)
         self.distributions = []
-        # breakpoint()
         for center in self.distributionCenters:
             var = multivariate_normal(mean=center, cov=self.std)
             self.distributions.append(var)
@@ -58,13 +56,11 @@ class MultimodalEnv(gym.Env):
         return np.ones((self.s_dim,)).astype(np.float32)
     
     def step(self, action):
-        # assert len(action) == self.a_dim
         reward = 0
         for distribution in self.distributions:
             reward += distribution.pdf(action) * self.scale
         reward = int(reward * 1000) / 1000 # only keep 3 digits after the decimal point
         done = True
-        # print(reward)
         return np.zeros((self.s_dim,)).astype(np.float32), reward, done, {}
     
 def plot_reward():
@@ -269,7 +265,6 @@ def plot_qfunctional():
             episodic_reward += r
         
         episodes += 1
-    # breakpoint()
     actions = np.arange(-args.env_mean*2, args.env_mean*2, 0.0025).reshape(-1, 1).astype(np.float32)
     state = np.ones((actions.shape[0], 5), dtype=np.float32())
     action_values = Q_object.forward(torch.tensor(state), torch.tensor(actions)).detach().numpy()
@@ -279,7 +274,6 @@ def plot_policy():
     
     action_values, env_mean, env_std, tau= plot_qfunctional()
     actions = np.arange(-env_mean*2, env_mean*2, 0.0025)
-    # breakpoint()
     probs = np.exp(action_values)/np.exp(action_values).sum()
     plt.plot(actions, probs, label="Q-Functional (Fourier, Rank 3)", linewidth=1.9, color="royalblue")
    
@@ -324,10 +318,8 @@ def plot_policy():
         values.append(env.step(np.array([actions[i]]))[1])
     values = np.array(values)
     policy = softmax(values, axis=0)
-    # policy = values/10
     plt.plot(actions, policy, label="Optimal", linewidth=1.9, color="gold")
     print("Sum of policy: ", sum(policy))
-    # plt.show()
     plt.title("Derived Policies of Q-functionals and SAC")
     plt.xlabel("Action")
     plt.ylabel("Probability Density")
@@ -342,8 +334,7 @@ def plot_learning():
     for i in range(actions.shape[0]):
         values.append(env.step(np.array([actions[i]]))[1])
     values = np.array(values)
-    # print('divided by 2!')
-    policy = softmax(values, axis=0)# / 2.
+    policy = softmax(values, axis=0)
 
     
     summation = 0

@@ -32,14 +32,6 @@ def load_model_and_env_them(model=None, task=None, load_model_path=None):
                         # required=True,
                         type=str)
 
-    # parser.add_argument("--experiment_name",
-    #                     required=True,
-    #                     type=str)
-
-    # parser.add_argument("--run_title",
-    #                     required=True,
-    #                     type=str)
-
     parser.add_argument("--load_model_path", type=str)#, required=True)
 
     args, unknown = parser.parse_known_args()

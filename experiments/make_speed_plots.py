@@ -3,10 +3,6 @@ import seaborn as sns; sns.set()
 import json
 
 COLOR_MAP = {
-    # "DDPG": "dimgrey",
-    # "Q-Functional Fourier Rank 1": "lightsalmon",
-    # "Q-Functional Fourier Rank 2": "navy",
-    # "Q-Functional Fourier Rank 3": "cornflowerblue",    
     "DDPG": "dimgrey",
     "Legendre Q-functional (Rank 1)": "lightsalmon",
     "Legendre Q-functional (Rank 2)": "navy",
@@ -35,7 +31,6 @@ def make_plots(filename, keys=None, save_path=None):
     # for key in ["DDPG", "Q-Functional Fourier Rank 1", "Q-Functional Fourier Rank 2", "Q-Functional Fourier Rank 3"]:
     for key in keys:
         speed_results = list(zip(*data[key]))
-        # import ipdb; ipdb.set_trace()
         plt.plot(speed_results[0], speed_results[1], marker='o', label=key, linewidth=6, markersize=10, c=COLOR_MAP[key])
 
     plt.xticks(fontsize=30)

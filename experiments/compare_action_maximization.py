@@ -273,18 +273,10 @@ def load_model_and_env_us():
     return Q_object, env
 
 def get_many_actions(env, num_actions):
-    # print('getting actions')
     action_dim = env.action_space.high.shape[0]
     max_a = env.action_space.high[0]
     all_actions = np.random.uniform(low=-max_a, high=max_a, size=(num_actions, action_dim))
     return all_actions
-
-# def get_many_actions_slow(env, num_actions):
-#     # print('getting actions')
-#     import ipdb; ipdb.set_trace()
-#     all_actions = [env.action_space.sample() for _ in range(num_actions)]
-#     # print('got actions')
-#     return np.array(all_actions)
 
 def get_q_values_from_many_actions_us(model, state, env, num_actions):
     all_actions = get_many_actions(env, num_actions)
@@ -302,8 +294,6 @@ def get_q_values_from_many_actions_them(model, state, env, num_actions):
     state_actions_torch = torch.FloatTensor(state_actions)
     all_q_values = q_function(state_actions_torch).cpu().detach().numpy().reshape(-1)
     return all_actions, all_q_values
-    # import ipdb; ipdb.set_trace()
-    print('wow')
     pass
 
 def get_best_action_and_q_value_us(model, state, env):
@@ -321,7 +311,6 @@ def get_best_action_and_q_value_them(model, state):
 
     best_action = model.predict(state)[0][None,...]
 
-    # import ipdb; ipdb.set_trace()
     q_function = model.policy.critic.qf0
     state_action = np.concatenate([state[None,...], best_action], axis=1)
     state_action_torch = torch.FloatTensor(state_action)
@@ -329,7 +318,6 @@ def get_best_action_and_q_value_them(model, state):
     assert len(best_action.shape) == 2
     assert best_action.shape[0] == 1
     best_action_single = best_action[0]
-    # import ipdb; ipdb.set_trace()
     return best_action_single, q_value
 
 
@@ -339,11 +327,6 @@ def main_us():
     state = env.reset()
     actions, q_values = get_q_values_from_many_actions_us(model, state, env, num_actions=num_actions_background)
     best_action, best_q_value = get_best_action_and_q_value_us(model, state, env)
-    # best_q_value, best_action = model.get_best_qvalue_and_action(torch.FloatTensor(state[None,...]))
-    # best_q_value = best_q_value.item()
-    # print(q_values)
-    # print(q_values.min(), q_values.max())
-    # print(best_action, best_q_value)
 
     best_of_set, worst_of_set = q_values.max(), q_values.min()
     num_sampled_better = len([v for v in q_values if v > best_q_value])
@@ -351,42 +334,20 @@ def main_us():
     print(f"Better than all but {percent_better:9.6f}")
 
 
-    # import ipdb; ipdb.set_trace()
-
-    print('good?')
-
-
 def main_them():
     num_actions_background = 100000
     model, env = load_model_and_env_them()
-    print('woah')
     model.set_env(env)
-    # returned = model.learn(total_timesteps=10000, eval_env=env, eval_freq=10000, n_eval_episodes=5)
-    # print('owo')
-    # import ipdb; ipdb.set_trace()
-    # import ipdb; ipdb.set_trace()
     for _ in range(10):
         state = env.reset()
         actions, q_values = get_q_values_from_many_actions_them(model, state, env, num_actions=num_actions_background)
-        # print('bing')
-        # import ipdb; ipdb.set_trace()
         best_action, best_q_value = get_best_action_and_q_value_them(model, state)
-        # print('bong')
         best_of_set, worst_of_set = q_values.max(), q_values.min()
         num_sampled_better = len([v for v in q_values if v > best_q_value])
         percent_better = num_sampled_better / len(q_values)
 
         print(f"Worst: {worst_of_set:9.6f} Best: {best_of_set:9.6f} Policy: {best_q_value:9.6f} Better than all but {percent_better:9.6f}")
-        # print(f"Better than all but {percent_better:9.6f}")
 
-        import ipdb; ipdb.set_trace()
-        print('bang')
-        # exit()
-
-
-    # import ipdb; ipdb.set_trace()
-
-    print('good?')
 
 def make_placeholder_graph():
     import seaborn as sns; sns.set()
@@ -412,11 +373,9 @@ def get_ten_states_from_episode(model, env):
     all_states = []
     total_steps = 0
     while not done:
-        # print(state)
         total_steps += 1
         all_states.append(state)
         action = model.predict(state)[0]
-        # print(action)
         state, reward, done, _ = env.step(action)
         total_reward += reward
     print(f"Total reward: {total_reward}")
@@ -424,8 +383,6 @@ def get_ten_states_from_episode(model, env):
     return [random.choice(all_states) for _ in range(10)]
 
 
-
-# def main_get_states_them(num_eps=10, write_path="./experiments/results_compare_action_maximization/HalfCheetah/states/1000_states_10_eps"):
 def main_get_states_them(num_eps=10, write_path="./experiments/results_compare_action_maximization/HalfCheetah/states/1000_states_10_eps"):
     model, env = load_model_and_env_them()
     model.set_env(env)
@@ -469,12 +426,7 @@ def main_evaluate_states_them(read_path="./experiments/results_compare_action_ma
     read_path = get_read_path()
     num_actions_background = 100000
     model, env = load_model_and_env_them()
-    print('woah')
     model.set_env(env)
-    # returned = model.learn(total_timesteps=10000, eval_env=env, eval_freq=10000, n_eval_episodes=5)
-    # print('owo')
-    # import ipdb; ipdb.set_trace()
-    # import ipdb; ipdb.set_trace()
     states = np.load(read_path)
     for state in states:
         actions, q_values = get_q_values_from_many_actions_them(model, state, env, num_actions=num_actions_background)
@@ -492,8 +444,6 @@ def test_model():
         state, done = env.reset(), False
         total_reward = 0
         while not done:
-            # states.append(s)
-            # state, r, done, _ = env.step(model.predict(state)[0])
             state, r, done, _ = env.step(model.predict(state)[0])
             total_reward += r
         print(f"Total reward: {total_reward}")
@@ -513,21 +463,12 @@ def try_it_out():
     for _ in range(10):
         state = env.reset()
         actions, q_values = get_q_values_from_many_actions_them(model, state, env, num_actions=num_actions_background)
-        # print('bing')
-        # import ipdb; ipdb.set_trace()
         best_action, best_q_value = get_best_action_and_q_value_them(model, state)
-        # print(best_action)
-        # print('bong')
         best_of_set, worst_of_set = q_values.max(), q_values.min()
         num_sampled_better = len([v for v in q_values if v > best_q_value])
         percent_better = num_sampled_better / len(q_values)
 
         print(f"Worst: {worst_of_set:9.6f} Best: {best_of_set:9.6f} Policy: {best_q_value:9.6f} Better than all but {percent_better:9.6f}")
-        # print(f"Better than all but {percent_better:9.6f}")
-
-        # import ipdb; ipdb.set_trace()
-        print('bang')
-        # exit()
 
 def fraction_less_then(l, n):
     return len([v for v in l if v < n]) / len(l)
@@ -572,8 +513,6 @@ def save_data_ant_ddpg():
         while steps < steps_per_seed:
             if steps % 100 == 0:
                 print(f"step {steps}")
-            # states.append(s)
-            # state, r, done, _ = env.step(model.predict(state)[0])
             actions, q_values = get_q_values_from_many_actions_them(model, state, env, num_actions=num_actions_background)
             best_action, best_q_value = get_best_action_and_q_value_them(model, state)
             num_sampled_better = len([v for v in q_values if v > best_q_value])
@@ -654,38 +593,22 @@ def try_it_out_episode():
     total_reward = 0
     percent_list = []
     while not done:
-        # print(state)
         actions, q_values = get_q_values_from_many_actions_them(model, state, env, num_actions=num_actions_background)
-        # print('bing')
-        # import ipdb; ipdb.set_trace()
         best_action, best_q_value = get_best_action_and_q_value_them(model, state)
-        # print(best_action)
-        # print('bong')
         best_of_set, worst_of_set = q_values.max(), q_values.min()
         num_sampled_better = len([v for v in q_values if v > best_q_value])
         percent_better = num_sampled_better / len(q_values)
         percent_list.append(percent_better)
 
         print(f"Worst: {worst_of_set:9.6f} Best: {best_of_set:9.6f} Policy: {best_q_value:9.6f} Better than all but {percent_better:9.6f}")
-        # print(f"Better than all but {percent_better:9.6f}")
 
-        # import ipdb; ipdb.set_trace()
-        print('bang')
-        # predict_action = model.predict(state)[0]
-        # noisy_best_action = best_action + np.random.normal(0, 0.1, size=best_action.shape)
         noisy_best_action = best_action + np.random.normal(0, 0.1, size=best_action.shape)
         assert env.action_space.low[0] == -1.0
         noisy_best_action = np.clip(noisy_best_action, -1, 1)
-        # state, r, done, _ = env.step(best_action)
         state, r, done, _ = env.step(noisy_best_action)
-        # import ipdb; ipdb.set_trace()
-        # state, r, done, _ = env.step(np.clip(best_action + np.random.normal(0, 0.1, size=best_action.shape), -1, 1))
-        # state, r, done, _ = env.step(best_of_set)
-        # state, r, done, _ = env.step(env.action_space.sample())
-
-        # state, r, done, _ = env.step(predict_action)
         total_reward += r
     print(f"total reward: {total_reward}")
+
     # confusingly, the percents are the x
     sorted_percent_list = list(sorted(percent_list))
     y_axis = np.linspace(0, 1, len(sorted_percent_list)).tolist()
@@ -705,7 +628,6 @@ def try_it_out_episode():
     plt.show()
 
 
-        # exit()
 
 
 if __name__ == "__main__":

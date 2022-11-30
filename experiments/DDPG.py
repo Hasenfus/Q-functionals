@@ -136,7 +136,6 @@ class DDPGNet(nn.Module):
         best_action = self._get_best_action(s)
         value = self._get_sa_value(s, best_action)
         if s.shape[0] == 1:
-            # value = value.item()
             best_action = best_action[0]
         
         return value, best_action
@@ -255,7 +254,6 @@ class DDPGNet(nn.Module):
 
         _, best_actions = self.get_best_qvalue_and_action(s_matrix)
         neg_y_hat = -1 * self.forward(s_matrix, best_actions)
-        # print('neg is not neg now')
         neg_y_hat_mean = neg_y_hat.mean()
         neg_y_hat_mean.backward()
         self.policy_optimizer.step()

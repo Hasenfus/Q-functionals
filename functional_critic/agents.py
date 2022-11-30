@@ -228,7 +228,6 @@ class BaseAgent(nn.Module):
         if action_to_sample is None:
             action_to_sample = self.action_to_sample
 
-        # print(f'sampling {action_to_sample} actions')
         should_quantile_sample = True
         if step == -1: # set step = -1 during evaluation/training if you don't want to use quantile sampling
             should_quantile_sample = False
@@ -273,8 +272,7 @@ class BaseAgent(nn.Module):
     def compute_Q_star(self, s, return_best_actions=False, quantile_sampling=False, step=-1, do_minq=False, action_to_sample=None):
         if action_to_sample is None:
             action_to_sample = self.action_to_sample
-        # print(f"compute qstar using {action_to_sample} samples")
-        # check this later
+
         with torch.no_grad():
             coefficients_1 = self.get_coefficients(self._coefficient_module_1, s)
 
@@ -282,8 +280,6 @@ class BaseAgent(nn.Module):
             if do_minq:
                 coefficients_2 = self.get_coefficients(self._coefficient_module_2, s)
 
-            # seems like we got a speedup from using the same actions for each state. That's twice as fast. The indexing
-            # thing is surprisingly slower. We could do the same for both.
             if self.use_precomputed_basis:
                 prefetch_basis_shape = [s.shape[0], action_to_sample]
                 actions = None
@@ -407,9 +403,7 @@ class BaseAgent(nn.Module):
         assert policy_type in ["e_greedy", "e_greedy_gaussian", "gaussian", "softmax"], f"Bad policy type: {policy_type}"
         policy_types = {
             'e_greedy': self.e_greedy_policy,
-            # 'e_greedy_gaussian': self.e_greedy_gaussian_policy,
             'gaussian': self.gaussian_policy,
-            # 'softmax': self.softmax_policy
         }
 
         return policy_types[policy_type](s, episode, step, train_or_test)
@@ -420,10 +414,8 @@ class BaseAgent(nn.Module):
 		Note - epsilon is determined by episode
 		'''
         assert train_or_test in ("train", "test")
-        # action_to_sample = self.action_to_sample if train_or_test == 'train' else self.interaction_action_to_sample
         action_to_sample = self.interaction_action_to_sample
 
-        # Should we change this to step based?
         epsilon = 1 / numpy.power(episode,
                                     1.0 / self.params['policy_parameter'])
         if train_or_test == 'train' and random.random() < epsilon:
@@ -441,7 +433,6 @@ class BaseAgent(nn.Module):
 
                 _, a = self.get_best_qvalue_and_action(s, step=step,
                                                        action_to_sample=action_to_sample)
-                #print("choosing action:", a)
             self.train()
             return a.numpy()
 

@@ -64,7 +64,6 @@ def make_graphs(experiment_name,
         for score_array, run_title in zip(score_arrays, good_run_titles)
     ]
     
-    # plt.xlim(0, 500)
     plt.xticks(fontsize=11)
     plt.yticks(fontsize=11)
 

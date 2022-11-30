@@ -9,15 +9,11 @@ import numpy as np
 import torch
 import gym
 import sys
-# from functional_critic import FourierBasis
 from functional_critic import utils, utils_for_q_learning
-# from functional_critic.FourierBasis import Net as FourierNet
-# from functional_critic.PolynomialBasis import Net as PolynomialNet
-# from functional_critic.LegendreBasis import Net as LegendreNet
 from functional_critic.agents import FourierAgent, PolynomialAgent, LegendreAgent
 
 from general.logging_utils import MetaLogger
-# from datetime import datetime
+
 from time import time
 import json
 
@@ -25,10 +21,6 @@ from tqdm import tqdm
 
 NUM_SAMPLES_TO_TRY = [1, 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000, 15000, 20000, 30000, 40000, 50000]
 
-# NUM_SAMPLES_TO_TRY = [1, 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 15000, 20000, ]
-# NUM_SAMPLES_TO_TRY = [10000, 20000, 30000, 40000, 50000, 60000, 70000, 80000, 90000, 100000, ]
-# NUM_SAMPLES_TO_TRY = [1, 1000, 2000, 3000, 4000, 5000]
-# NUM_SAMPLES_TO_TRY = [1, 1000, 2000]
 
 
 

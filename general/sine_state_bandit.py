@@ -105,7 +105,7 @@ class SineRewardEnv(gym.Env):
         X, Y = np.meshgrid(x, y)  # grid of point
         actions = np.concatenate([X.reshape(-1, 1), Y.reshape(-1, 1)], axis=1)
         actions_torch = torch.Tensor(actions).to(Q_object.device)
-        #states_torch = torch.zeros_like(actions_torch)
+
         states_torch = torch.zeros(actions.shape[0], self.s_dim).to(Q_object.device)
         Z_torch = Q_object.forward(states_torch, actions_torch)
         Z = Z_torch.detach().cpu().numpy()
@@ -147,7 +147,7 @@ class MultimodalEnv(gym.Env):
             self.distributions.append(var)
         
     def reset(self):
-        # Since it's a bandit, I think we should have a constant state
+        # Since it's a bandit, we should have a constant state
         return np.ones((self.s_dim,))
     
     def step(self, action):

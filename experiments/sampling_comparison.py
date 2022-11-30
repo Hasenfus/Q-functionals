@@ -99,10 +99,6 @@ def write_results_to_file(seed_num, model_file, json_file, params, n_evals=10):
 
     json_obj_for_seed = {"results": results.tolist(), "std_errs": std_errs.tolist()}
 
-    # plt.plot(actions_to_try_sampling, results)
-    # plt.fill_between(actions_to_try_sampling, results-std_errs, results+std_errs, alpha=0.2)
-    # plt.show()
-
     # write the data to a file
     current_speed_results['seed_' + str(seed_num)] = json_obj_for_seed
     new_json_str = json.dumps(current_speed_results, indent=4)
@@ -190,7 +186,6 @@ if __name__ == "__main__":
         print("Running on CPU")
 
 
-    # process_all_results(args.filename, params)
     make_plot_from_json(args.filename)
             
     

@@ -36,7 +36,6 @@ def get_scores(log_dir,
     overall_scores = [s[:min_length] for s in overall_scores]
 
     score_array = np.array(overall_scores)
-    # print(score_array.shape)
     if cumulative:
         score_array = np.cumsum(score_array, axis=1)
     return score_array
