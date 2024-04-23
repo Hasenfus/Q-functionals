@@ -87,7 +87,7 @@ if __name__ == "__main__":
     eval_env = gym.make(params["env_name"])
 
     params['env'] = train_env
-    utils_for_q_learning.set_random_seed(params)
+    # utils_for_q_learning.set_random_seed(params)
     
     command_string = '"python ' + " ".join(sys.argv) + '"'
     params["command_string"] = command_string
